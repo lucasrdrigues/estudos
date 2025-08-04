@@ -39,15 +39,15 @@ resource "aws_instance" "app_server" {
     # Nome da chave, não precisa da extensão
     key_name = "iac-alura"
 
-    # AUTOMATIZANDO O PROCESSO DE COMFIGURAR O SERVIDOR HTTP
+    # AUTOMATIZANDO O PROCESSO DE COMFIGURAR O SERVIDOR HTTP - este bloco de código não precisamos, pois para esta função vamos usar o ansible.
     # OBS: A primeira linha é somente para dizer que o script é para rodar no bash
-    # EOF identifica o início e final
-    user_data = <<-EOF
-                  #!/bin/bash
-                  cd /home/ubuntu
-                  echo "<h1>Feito com Terraform</h1>" > index.html
-                  nohup busybox httpd -f -p 8080 &
-                EOF
+    # # EOF identifica o início e final
+    # user_data = <<-EOF
+    #               #!/bin/bash
+    #               cd /home/ubuntu
+    #               echo "<h1>Feito com Terraform</h1>" > index.html
+    #               nohup busybox httpd -f -p 8080 &
+    #             EOF
 
     # Nome que damos para instância
     tags = {

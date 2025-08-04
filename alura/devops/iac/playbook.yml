@@ -1,0 +1,14 @@
+# Para rodar use: 
+# ansible-playbook playbook.yml -u ubuntu --private-key iac-alura.pem -i hosts.yml
+# comando + playbook + usuário do host + chave para o ssh + arquivo com o host 
+
+- hosts: terraform-ansible
+  tasks:   # Separamos cada etapa em taks(tarefas)
+
+  - name: criando o arquivo
+    copy: # O copy usamos para criar o arquivo
+      dest: /home/ubuntu/index.html # Destino
+      content: <h1>Esse bilhete é verdade</h1> # Conteúdo
+
+  - name: criando servidor
+    shell: "nohup busybox httpd -f -p 8080 &" # Rodando comando no shell
