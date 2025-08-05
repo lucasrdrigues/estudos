@@ -5,6 +5,8 @@
 
 # terraform apply - cria a instância
 
+# terraform destroy - destrói a máquina atual que temos a partir deste arquivo
+
 # CUIDADO: Certifique-se de que as imagens e tipos de instâncias são gratuitas e disponiveis para uso!
 
 # Este primeiro bloco podemos copiar do passo a passo da documentação de como criar um iac com aws
@@ -51,7 +53,7 @@ resource "aws_instance" "app_server" {
 
     # Nome que damos para instância
     tags = {
-      Name = "Teste aws"
+      Name = "Terraform Ansible Python"
     }
 }
 

@@ -4,11 +4,29 @@
 
 - hosts: terraform-ansible
   tasks:   # Separamos cada etapa em taks(tarefas)
+  
+  - name: Instalando o python3, virtualenv
+    apt:   # usamos para gerenciar os pacotes, este comando no ansible serve para qualquer distribuição
+      pkg: # Pacotes a serem instalados com apt
+        - python3
+        - virtualenv
+        update_cache: yes # Atualiza o repositório, como se fosse o apt update
+    become: yes # Executa os comandos como su(super user) 
 
-  - name: criando o arquivo
-    copy: # O copy usamos para criar o arquivo
-      dest: /home/ubuntu/index.html # Destino
-      content: <h1>Esse bilhete é verdade</h1> # Conteúdo
+    - name: Instalando dependências com pip(Django e Django Rest)
+      pip: # Usando pip para fazer instalação
+        virtualenv: /home/ubuntu/tcc/venv # Aqui é tcc por causa do cenário fictício de uma aluna
+        name:
+          - django 
+          - djangorestframework
 
-  - name: criando servidor
-    shell: "nohup busybox httpd -f -p 8080 &" # Rodando comando no shell
+    - name: Iniciando o projeto
+      shell: '. /home/ubuntu/tcc/venv/bin/activate; django-admin startproject setup /home/ubuntu/tcc/' # Rodando projetos a partir do shell. O ponto e vírgula faz com que o shell rode dois comandos seguidos no mesmo shell. Se puxar outro parametro shell abaixo, ele abre outro shell
+      # CUIDADO: Se você tentar rodar este comando novamente(com os arquivos já criados), irá dar erro !
+      
+    - name: Alterando o host do settings
+      lineinfile: # Alterando linha no arquivo
+        path: /home/ubuntu/tcc/setup/settings.py' # Caminho do arquivo
+        regexp: 'ALLOWED_HOSTS' # Definindo a linha, a que tiver o allowed_hosts será alterada
+        line: 'ALLOWED_HOSTS = ["*"]' # Vamos trocar a linha acima por este conteúdo
+        backrefs: yes # Se ele não achar a linha que definimos para ser alterada, ele não fará nada
