@@ -1,62 +1,9 @@
 ---
-- hosts: all
-  # Handlers - responsável por executar tarefas multiplas vezes dentro de um playbook, ele é como se fosse funções nas linguagens de programaçção. Eles só são chamados quando ocorre alguma modificação(flag "changed" quando rodamos o playbook)
-  handlers:
-    # Handler 1 - restartar o apache
-    - name: restart apache
-      service:
-        name: apache2
-        state: restarted
-      become: yes # handlers são funções administrativas, precisamos de acesso sudo
-  tasks:
-    # Task 1
-    - name: Instala dependencias
-      ansible.builtin.apt:
-        pkg: # pacotes a serem instalados
-        - apache2
-        - ghostscript
-        - libapache2-mod-php
-        - mysql-server
-        - php
-        - php-bcmath
-        - php-curl
-        - php-imagick
-        - php-intl
-        - php-json
-        - php-mbstring
-        - php-mysql
-        - php-xml
-        - php-zip
-        state: latest
-        update_cache: yes
-      become: yes # Se tornando super usuário para rodar os comandos acima
+- hosts: wordpress
+  roles:
+  - wordpress
+  
 
-    # Task 2
-    - name: Criar diretório se não existir
-      ansible.builtin.file: # O ansible trata os diretórios como arquivos também
-        path: /srv/www
-        state: directory
-        owner: www-data # Dono da pasta
-        group: www-data # Grupo da pasta
-      become: yes # Usando privilégios sudo
-
-    # Task 3
-    - name: Descompacta um arquivo(pasta) instalado da web
-      # Poderiamos usar o módulo get_url para baixar o arquivo e depois fazer a extração, mas este módulo faz a descompactação diretamente de um arquivo para o destino
-      ansible.builtin.unarchive:
-        src: https://wordpress.org/latest.tar.gz
-        dest: /srv/www
-        remote_src: yes # Indica que o diretório de origem é remoto, ou seja, que vamos puxá-lo da internet
-      become: yes # Para o sudo
-
-    # Task 4
-    # Poderiamos usar algum módulo para criar o arquivo e adicionar o conteúdo ou entao usar o shell para isso, mas dessas formas não teriamos controle total do arquivo. Por isso, vamos criar o arquivo na nossa máquina local com o ansible e enviá-la para a máquina destino.
-    # Crie o arquivo wordpress.conf e jogue dentro da pasta files na nossa máquina local
-    - name: Copiando um arquivo
-      ansible.builtin.copy:
-        src: files/wordpress.conf # Diretório arquivo máquina local. Se tivesse com o remote_src: yes ele iria buscar ele diretório na máquina remota
-        dest: /etc/apache2/sites-available/000-default.conf # Diretório arquivo máquina remota(destino)
-        # Aqui colocamos a página padrão para ser essa do wordpress.
-      become: yes
-      notify: # Puxando o handler para ser executado ao ser copiado o arquivo que definimos
-        - restart apache # nome do handler definido lá em cima que será ser executado
+- hosts: mysql
+  roles:
+  - mysql

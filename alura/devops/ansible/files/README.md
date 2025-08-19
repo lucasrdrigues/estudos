@@ -1,0 +1,1 @@
+Pasta que contém os arquivos que serão enviados para o host de destino.
