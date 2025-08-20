@@ -1,0 +1,75 @@
+# This workflow will build a golang project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-go
+
+# Nome do workflow
+name: Integração Contínua
+
+# Gatilhos -> quando o workflow será executado ?
+on:
+  # Sempre que eu fizer um push ou um pull request para a main
+  # Neste caso ele irá rodar duas vezes: ao fazer o pull request e depois ao fazer o push na main
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+# Trabalhos -> conjunto de passos, eles podem ser executados em paralelo
+jobs:
+  # Identificador do job, podemos dar o nome que quisermos
+  ci:
+    runs-on: ubuntu-latest # Qual tipo de servidor será executado
+    steps: # Etapas
+
+   # Esta linha instrui o job a usar uma "Action" pré-construída. Actions são pedaços de código reutilizáveis que executam tarefas comuns.
+    - uses: actions/checkout@v4 # Executa um git clone do seu repositório para dentro do ambiente do runner. Sem este passo, a máquina virtual estaria vazia e não teria acesso aos seus arquivos de código para os passos seguintes.
+
+    # Configuração do ambiente GO
+    - name: Set up Go
+      # Utiliza outra Action oficial, desta vez para configurar o ambiente da linguagem Go. Ela instala a versão especificada do Go e a adiciona ao PATH do sistema, deixando tudo pronto para os próximos comandos.
+      # Estas actions são comandos já existentes, mas podemos criar as nossas, como nos casos mais abaixo
+      uses: actions/setup-go@v4
+      with: #  Permite passar parâmetros de entrada para a Action.
+        go-version: '1.22' # Este é o parâmetro que você está passando para a Action setup-go. Ele diz para instalar e configurar especificamente a versão 1.20 do Go.
+
+      # OBS: Os servidores do github actions já vem com docker, git e outras ferramentas instalados.
+    
+    # Primeira etapa a ser realizada
+    - name: Inicia banco
+      run: docker compose up -d postgres # Comando a ser executado no servidor
+
+    - name: Lint
+      uses: golangci/golangci-lint-action@v6
+      with:
+        version: v1.59
+        args: controllers/ database/ models/ routes/
+
+    # Passando variáveis de ambiente - secrets
+    # DEFININDO VARIÁVEIS
+    # Vá nas configs do repositório > Security > Secrets and Variables > Actions: As variáveis que sao criptografadas fica em secrets e as que nao precisam de criptografia fica em variables
+    #  Clique para criar e adicione as seguintes variáveis:
+          # DB_HOST=localhost -> antes era postgres, mas como o nosso banco está local, vamos usar localhost
+          # DB_USER=root
+          # DB_PASSWORD=root
+          # DB_NAME=root
+          # DB_PORT=5432
+        # OBS: Nós também poderiamos usar secrets e variáveis como parâmetro para comandos, entre outras coisas!
+        
+        # Para um processo ter acesso a variáveis de ambiente secrets, devemos passar elas antes deste processo para que ele tenha acesso a elas. Veja abaixo com podemos usá-las:
+    - name: Test
+      run: DB_HOST=${{ secrets.DB_HOST }} DB_PASSWORD=${{ secrets.DB_PASSWORD }} DB_USER=${{ secrets.DB_USER }} DB_NAME=${{ secrets.DB_NAME }} DB_PORT=${{ secrets.DB_PORT }} go test -v main_test.go
+    
+    
+    # BREVE ENTRADA EM CD
+
+    # Compilação do projeto - compila o projeto e gera um executável
+    # O Build pode ser um job diferente(fora desta sequencia aqui). Poderiamos, por exemplo, enviar este build para o servidor de produção, entre outras coisas
+    - name: Build
+      run: go build main.go
+
+    # Pegando o artefato e fazer o upload para ele estar disponível para ser baixado
+    - name: Projeto compilado
+      uses: actions/upload-artifact@v4
+      with:
+        name: projeto_compilado
+        path: main
+
