@@ -40,7 +40,7 @@ jobs:
       run: go test -v main_test.go 
       
   build:
-    needs: test # Depende do job de build
+    needs: test # Depende do job test
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
