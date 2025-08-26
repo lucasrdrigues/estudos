@@ -1,0 +1,42 @@
+name: Docker
+
+on:
+  workflow_call: # O gatilho deste workflow vai ser a chamada em outro workflow(go.yml)
+  
+jobs:
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup Docker Build
+      uses: docker/setup-buildx-action@v2.0.0
+
+    # Download do artifact, podemos colocar em qualquer lugar, contudo, deve vir antes do build e push(que é aonde vamos precisar dele)
+    - name: Download a Build Artifact
+      uses: actions/download-artifact@v3.0.0
+      with:
+        # Nome do artifact como foi salvo antes
+        name: programa
+
+    - name: Docker Login
+      uses: docker/login-action@v2.0.0
+      with:
+        username: lucasnrdrigues
+        password: ${{ secrets.PASSWORD_DOCKER_HUB }} # Precisa criar esta variável no secrets, e devemos liberar o uso delas no arquivo que irá usar este!
+
+    - name: Build and push Docker images
+      uses: docker/build-push-action@v3.0.0
+      with:
+        # Definindo a pasta onde está nossos arquivos
+        context: .
+        # Caminho para o dockerfile
+        file: ./Dockerfile
+        # Subir a imagem, vem false por default
+        push: true
+        # Lista de tags. O ${{github.ref_name}} nos permite criar uma tag de acordo com o nome da branch em que estamos
+        # Usamod "github.xxx" para podermos acessar variáveis dentro do github
+        tags: lucasnrdrigues/go_ci:${{github.ref_name}}
+        
+        

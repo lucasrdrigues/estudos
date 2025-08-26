@@ -1,0 +1,61 @@
+name: Go
+
+on:
+  push:
+    branches: [ '*' ] # O asterístico indica que é qualquer branch
+  pull_request:
+    branches: [ '*' ]
+
+jobs:
+
+  test:
+    runs-on: ${{ matrix.os }} # Rodando os testes em 2 so diferentes, definidos abaixo em "os" em matrix
+    # Adicionando variáveis de ambiente, devemos por dentro de um job
+    env:
+      HOST: localhost
+      PORT: 5432
+      USER: root
+      PASSWORD: root
+      DBNAME: root
+    strategy:
+      matrix:
+        go_version: ['1.18', '1.17', '>=1.18']
+        os: ['ubuntu-latest', 'ubuntu-18.04']
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Go
+      uses: actions/setup-go@v3
+      with:
+        go-version: ${{ matrix.go_version }}
+      
+    - name: Build-DB
+      run: docker compose build
+      
+    - name: Create-DB
+      # run: docker-compose up -d -> comando descontinuado, não usa mais com o hífen
+      run: docker compose up -d
+
+    - name: Test
+      run: go test -v main_test.go 
+      
+  build:
+    needs: test # Depende do job de build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build
+      run: go build -v main.go
+
+    # Criando artifacts para que possa ser usado no job docker
+    - name: upload a Build Artifact
+      uses: actions/upload-artifact@v3.1.0
+      with:
+        name: programa
+        # Indicando quais arquivos ou pastas devem ser enviados como artifact, neste caso é somente o arquivo main(arquivo compilado)
+        path: main
+
+  docker:
+    needs: build
+    uses: ./.github/workflows/Docker.yml # Usando outro arquivo de workflow
+    secrets: inherit # Como os secrets serão usados em outros arquivo, devemos liberar o uso deles para lá
