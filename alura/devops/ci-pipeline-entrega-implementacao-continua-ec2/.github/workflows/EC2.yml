@@ -1,0 +1,57 @@
+name: Entrega Contínua
+
+on:
+  workflow_call:
+
+jobs:
+
+  EC2:
+    runs-on: ubuntu-latest
+    steps:
+
+      # Fazer download do artefato
+      - name: Download a Build Artifact
+        uses: actions/download-artifact@v5.0.0
+        with:
+          # Artifact name
+          name: programa
+      # O Go não compila os arquivos estáticos(HTML e CSS), por isso precisamos puxar eles também
+      - uses: actions/checkout@v5
+
+      # Fazendo envio dos arquivos para a máquina virtual
+      - name: Deploy to Staging Server
+        uses: easingthemes/ssh-deploy@main
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+          # Para achar o usuário criado vá em conectar > conexão de instância
+          REMOTE_USER: ${{ secrets.REMOTE_USER }}
+          # Pasta em que vai ficar os arquivos dentro da máquina remota:
+          TARGET: /home/${{ secrets.REMOTE_USER }}
+          # Arquivos que não serão enviados
+          EXCLUDE: "postgres-data"
+
+      - name: Executing remote ssh commands using password
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ${{ secrets.REMOTE_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          # O pipe(|) no yml serve para informar que o bloco terá multiplas linhas, ele entende que tudo que vem indentado abaixo faz parte de um único bloco de texto (nesse caso, a sequência de comandos que será executada no servidor remoto).
+          # Para o DBHOST usamos um endpoint que pegamos no console da aws, pois ela serve como endereço do banco
+          script: |
+            export HOST=${{ secrets.DBHOST }}
+            export USER=${{ secrets.DBUSER }}
+            export PASSWORD=${{ secrets.DBPASSWORD }}
+            export DBNAME=${{ secrets.DBNAME }}
+            export DBPORT=${{ secrets.DBPORT }}
+            export PORT=8000
+            chmod +x main
+            nohup ./main > nohup.out 2> nohup.err < /dev/null &
+          # export serve para definir variáveis de ambiente e torná-las disponíveis para os processos/execuções que rodarem depois.
+          # O nohup serve para não fechar o programa quando nosso terminal fechar e o nosso "&" serve para deixar o comando rodando em segundo plano.
+          # ./main → executa o binário da sua aplicação.
+          # > nohup.out → redireciona a saída padrão (logs normais) para o arquivo nohup.out
+          # 2> nohup.err → redireciona a saída de erros para o arquivo nohup.err.
+          # < /dev/null → sempre que o terminal precisar de uma entrada, irá receber "null"
