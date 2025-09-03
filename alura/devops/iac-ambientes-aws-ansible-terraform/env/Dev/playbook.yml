@@ -1,0 +1,29 @@
+- hosts: terraform-ansible
+  tasks:
+  - name: Instalando o python3, virtualenv
+    apt:
+      pkg:
+      - python3
+      - virtualenv
+      update_cache: yes
+    become: yes
+  - name: Instalando dependencias com pip (Django e Django Rest)
+    pip:
+      virtualenv: /home/ubuntu/tcc/venv
+      name:
+        - django
+        - djangorestframework
+  - name: Verificando se o projeto já existe
+    stat: # Verifica o estado
+      path: /home/ubuntu/tcc/setup/settings.py' # Sempre que iniciamos um projeto, este arquivo é criado, por isso vamos usar ele como referência
+    # Registra o resultado do stat acima dentro da variável "projeto". Cuidado: ficam várias informações salvas dentro dela, devemos caminhas para poder pegar alguma específica.
+    register: projeto
+  - name: Iniciando o projeto
+    shell: '. /home/ubuntu/tcc/venv/bin/activate; django-admin startproject setup /home/ubuntu/tcc/'
+    when: not projeto.state.exists # Essa faz faz com que ele só execute a tarefa se o arquivo não existir
+  - name: Alterando o hosts do settings
+    lineinfile:
+      path: /home/ubuntu/tcc/setup/settings.py
+      regexp: 'ALLOWED_HOSTS'
+      line: 'ALLOWED_HOSTS = ["*"]'
+      backrefs: yes

@@ -1,0 +1,3 @@
+terraform init - rode este comando dentro da pasta em que esta o main.tf
+terraform apply - rode este comando dentro da pasta onde esta o main.tf, mas rode de acordo com a pasta do ambiente que quer subir !
+terraform output - mostra o output do último comando rodado
