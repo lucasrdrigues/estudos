@@ -1,0 +1,9 @@
+.campo-form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    border: none;
+    /* Mexi no padding */
+    padding: 30px; 
+    margin: 0;
+}

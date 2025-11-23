@@ -1,0 +1,9 @@
+/* Configurações Globais ficam aqui. 
+Apaguei tudo */
+
+/* Adicionando linhas */
+* {
+    font-family: "Work Sans", sans-serif;
+}
+
+/* Este arquivo esta sendo importado no main.jsx */
