@@ -6,4 +6,12 @@ Apaguei tudo */
     font-family: "Work Sans", sans-serif;
 }
 
-/* Este arquivo esta sendo importado no main.jsx */
+body {
+    background-color: #06151A;
+}
+
+
+
+
+
+/* OBS: Este arquivo esta sendo importado no main.jsx */
