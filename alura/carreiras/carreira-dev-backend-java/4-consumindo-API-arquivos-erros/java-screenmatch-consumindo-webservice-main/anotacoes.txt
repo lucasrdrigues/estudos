@@ -1,0 +1,13 @@
+INFORMAÇÕES SOBRE A API
+Here is your key: e80f425f
+OMDb API: http://www.omdbapi.com/?i=tt3896198&apikey=e80f425f
+
+OBS: Busque na documentação do Java sobre http request, o java tem uma lib própria para isso.
+
+REPOSITÓRIO DE LIBS
+https://mvnrepository.com/
+
+Podemos usar os gerenciadores de pacotes como maven ou então podemos baixar o pacote .jar.
+
+Adicionando uma lib:
+File > Project Structure > Modules > Dependencies > "+" > Selecionar a lib(.jar)
