@@ -1,5 +1,6 @@
 import './App.css'
 import { Banner } from './componentes/Banner'
+import { CardEvento } from './componentes/CardEvento'
 // Como salvamos o arquivo como index.jsx, o próprio JS irá pegar, por isso nao preciso por o caminho absoluto do arquivo abaixo
 import { FormularioDeEvento } from './componentes/FormularioDeEvento'
 import { Tema } from './componentes/Tema'
@@ -10,7 +11,10 @@ import { Tema } from './componentes/Tema'
 
 // Principal
 function App() {
-
+  
+  // Poderiamos percorrer um array com das seguintes formas:
+  // Map - transforma um array em outro array modificado
+  // forEach - percorre o array, mas não transforma em outro array
   const temas = [
     {
       id: 1,
@@ -38,6 +42,15 @@ function App() {
     },
   ]
 
+  const eventos = [
+    {
+      capa: 'https://raw.githubusercontent.com/viniciosneves/tecboard-assets/refs/heads/main/imagem_15.png',
+      tema: temas[0],
+      data: new Date(),
+      titulo: 'Mulheres no front'
+    },
+  ]
+
   return (
     <main>
       <header>
@@ -46,24 +59,16 @@ function App() {
       </header>
       <Banner />
       <FormularioDeEvento />
-      <section>
-        <Tema tema={temas[0]}/>
-      </section>
-      <section>
-        <Tema tema={temas[1]}/>
-      </section>
-      <section>
-        <Tema tema={temas[2]}/>
-      </section>
-      <section>
-        <Tema tema={temas[3]}/>
-      </section>
-      <section>
-        <Tema tema={temas[4]}/>
-      </section>
-      <section>
-        <Tema tema={temas[5]}/>
-      </section>
+      {temas.map(function (item) {
+        return (
+          // Precisamos adicionar a prop key para cada elemento que for repetido em tela, se não o React reclama
+          <section key={item.id}>
+            {/* Item é o contador dos elementos dentro do array que queremos percorrer */}
+            <Tema tema={item}/>
+            <CardEvento evento={eventos[0]}/>
+          </section>
+        )
+      })}
     </main>
   )
 }
