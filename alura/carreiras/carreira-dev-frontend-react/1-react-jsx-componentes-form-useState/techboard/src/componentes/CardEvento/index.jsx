@@ -11,7 +11,7 @@ export function CardEvento({ evento }) {
                 <p>
                     {evento.data.toLocaleDateString('pt-BR')}
                 </p>
-                <h4>
+                <h4 className='titulo'>
                     {evento.titulo}
                 </h4>
             </div>

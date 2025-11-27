@@ -13,7 +13,7 @@ import { Tema } from './componentes/Tema'
 function App() {
   
   // Poderiamos percorrer um array com das seguintes formas:
-  // Map - transforma um array em outro array modificado
+  // Map - transforma um array em outro array modificado. Ele permite que você transforme cada elemento de uma lista em um componente React, garantindo que cada elemento tenha uma chave única, o que ajuda o React a identificar quais itens mudaram, foram adicionados ou removidos.
   // forEach - percorre o array, mas não transforma em outro array
   const temas = [
     {
