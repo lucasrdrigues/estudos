@@ -48,7 +48,7 @@ function App() {
       tema: temas[0],
       data: new Date(),
       titulo: 'Mulheres no front'
-    },
+    }
   ]
 
   return (
@@ -58,7 +58,7 @@ function App() {
         <img src="/logo.png" alt="" /> 
       </header>
       <Banner />
-      <FormularioDeEvento />
+      <FormularioDeEvento temas={temas}/>
       {temas.map(function (item) {
         return (
           // Precisamos adicionar a prop key para cada elemento que for repetido em tela, se não o React reclama
