@@ -7,7 +7,8 @@ import { ListaSuspensa } from "../ListaSuspensa";
 import { Botao } from "../Botao";
 
 // Componente FormularioDeEvento
-export function FormularioDeEvento({ temas }) {
+// Podemos receber uma função por parametro, como a ao Submeter.
+export function FormularioDeEvento({ temas, aoSubmeter }) {
   function aoFormSubmetido(formData) {
     console.log("Opa, tá na hora de criar um evento!", formData);
     const evento = {
@@ -18,7 +19,7 @@ export function FormularioDeEvento({ temas }) {
       data: new Date(formData.get('dataEvento')),
       titulo: formData.get('nomeEvento'),
     };
-    console.log("Esse é o evento: ", evento)
+    aoSubmeter(evento)
   }
 
   return (

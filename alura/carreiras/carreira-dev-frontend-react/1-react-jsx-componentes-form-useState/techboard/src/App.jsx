@@ -51,6 +51,11 @@ function App() {
     }
   ]
 
+  function adicionarEvento(evento){
+    eventos.push(evento)
+    console.log('eventos => ', eventos)
+  }
+
   return (
     <main>
       <header>
@@ -58,14 +63,19 @@ function App() {
         <img src="/logo.png" alt="" /> 
       </header>
       <Banner />
-      <FormularioDeEvento temas={temas}/>
+      <FormularioDeEvento 
+        temas={temas} 
+        aoSubmeter={adicionarEvento} 
+      />
       {temas.map(function (item) {
         return (
           // Precisamos adicionar a prop key para cada elemento que for repetido em tela, se não o React reclama
           <section key={item.id}>
             {/* Item é o contador dos elementos dentro do array que queremos percorrer */}
             <Tema tema={item}/>
-            <CardEvento evento={eventos[0]}/>
+            {eventos.map(function(item, index){
+              return <CardEvento evento={item} key={index}/>
+            })}
           </section>
         )
       })}
