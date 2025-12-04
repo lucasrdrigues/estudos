@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import './App.css'
 import { Banner } from './componentes/Banner'
 import { CardEvento } from './componentes/CardEvento'
@@ -7,6 +8,7 @@ import { Tema } from './componentes/Tema'
 
 // Anotações importantes:
 // No React, componentes são FUNÇÕES
+// Se quisermos que ela seja executada novamente(renderizada), precisamos dizer para o react usando States
 // O HTML é inserido dentro do arquivo index.html pelo JavaScript(o JS pega código html e joga dentro de outro arquivo html)
 
 // Principal
@@ -42,17 +44,19 @@ function App() {
     },
   ]
 
-  const eventos = [
+  // eventos: dado a ser modificado(strings, arrays, entre outros), setEventos: função que modifica o dado
+  const [eventos, setEventos] = useState([
     {
       capa: 'https://raw.githubusercontent.com/viniciosneves/tecboard-assets/refs/heads/main/imagem_15.png',
       tema: temas[0],
       data: new Date(),
       titulo: 'Mulheres no front'
     }
-  ]
+  ])
 
   function adicionarEvento(evento){
-    eventos.push(evento)
+    // Passando o novo array(atualizado com o novo evento) para o evento(dado no State)
+    setEventos([...eventos, evento])
     console.log('eventos => ', eventos)
   }
 
