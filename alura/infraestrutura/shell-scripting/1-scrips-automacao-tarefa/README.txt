@@ -1,0 +1,1 @@
+Cenário: converter arquivos jpg em png.
