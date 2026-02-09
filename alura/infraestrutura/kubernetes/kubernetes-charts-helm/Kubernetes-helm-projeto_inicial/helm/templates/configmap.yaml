@@ -1,0 +1,16 @@
+# Para que possamos reaproveitar este codigo, precisamos usar dados dinânimos em alguns campos.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.configMap.name }} # Cuidado com o "V" maiúsculo!
+  # Usando loops para poder pegar os valores
+data:
+  # - -> indica que os dados são importantes
+  # $key, $value ->  indica que os dados estão em pares de chave + valor
+  # := -> de onde o Helm vai pegar os valores
+  # O Código abaixo somente indica que é um loop para pegar os valores
+  {{- range $key, $value := .Values.configMap.data }}
+  # O codigo abaixo esta indicando como o Helm irá adicionar os valores
+  {{$key}}: "{{$value}}"
+  # Precisamos fechar o nosso loop, o range precisa saber quando fechar
+  {{- end}}

@@ -1,0 +1,21 @@
+NOMENCLATURA
+Chart.yaml - O "c" tme que ser maiúsculo.
+values.yaml - O "v" tem que ser minúsculo.
+
+VERSIONAMENTO SEMÂNTICO
+Para aprender sobre versionamento semântico(como por exemplo 1.0.0) vá em: 
+https://www.alura.com.br/artigos/versionamento-semantico-breve-introducao?srsltid=AfmBOoq7W0EPBJMhltx7etoMdk-NSO64iKh0Hc7zH26URB4Q6yxkSGfM
+
+ESTRUTURA E DIRETÓRIOS DE UM CHART
+mychart/
+  Chart.yaml          # Contém informações sobre o chart
+  values.yaml         # Valores padrão de configuração do chart
+  charts/             # Contém charts dependentes
+  templates/          # Arquivos de template que definem os recursos Kubernetes
+  templates/_helpers.tpl  # Arquivo de ajuda para templates
+  .helmignore         # Arquivo para listar arquivos/padrões a serem ignorados
+
+  DEPENDENCIAS
+  Rode o comando "helm dependency update" para que possa atualizar a nossa dependencia do mysql
+
+  

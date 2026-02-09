@@ -1,0 +1,4 @@
+Após rodar o comando de instalação do chart do mysql, aparece no terminal um comando para pegar a senha de root, rode-o para pegar a senha abaixo!
+U3SELUDFap
+
+OBS: Na documentacao do chart, são mostrados os parâmetros que podemos passar para modificar como senha, usuário, entre outros.

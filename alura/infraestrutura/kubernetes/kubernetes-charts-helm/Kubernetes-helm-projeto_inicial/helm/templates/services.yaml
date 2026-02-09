@@ -1,0 +1,60 @@
+{{- range $service := .Values.service}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{$service.name}}
+  labels:
+    app: {{$service.label}}
+spec:
+  ports:
+  - port: {{$service.port}}
+    name: {{$service.name}}
+  clusterIP: None
+  selector:
+    app: {{$service.label}}
+# Os tracos abaixo são importantes para separar os serviços se caso fossemos adicionar mais.
+---
+{{- end}}
+# Fazemos da forma acima para evitar repetição de código, como mostrado abaixo: 
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: server
+#   labels:
+#     app: server
+# spec:
+#   ports:
+#   - port: 8081
+#     name: server
+#   clusterIP: None
+#   selector:
+#     app: server
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: pagamentos-ms
+#   labels:
+#     app: pagamentos
+# spec:
+#   ports:
+#   - port: 40000
+#     name: pagamentos-ms
+#   clusterIP: None
+#   selector:
+#     app: pagamentos
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: pedidos-ms
+#   labels:
+#     app: pedidos
+# spec:
+#   ports:
+#   - port: 40001
+#     name: pedidos-ms
+#   clusterIP: None
+#   selector:
+#     app: pedidos
