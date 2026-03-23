@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: frontend-rs
+  labels:
+    app: frontend
+
+spec:
+  template: # Dentro de template fica a definição para os pods 
+    metadata:
+      name: my-pod-webserver
+      labels:
+        apps: my-app
+        tier: frontend
+    spec: # Este spec é dos pods, não do ReplicaSet!
+      containers:
+      - name: my-container-nginx
+        image: nginx
+  
+  # O selector é o que o ReplicaSet usa para identificar quais pods ele deve gerenciar. Ele deve corresponder aos labels dos pods definidos no template acima.
+  selector:
+    matchLabels:
+      apps: my-app
+  replicas: 4 # O número de réplicas que queremos para os pods. O ReplicaSet irá garantir que esse número de pods esteja sempre em execução.

@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-deployment
+  labels:
+    app: frontend
+spec:
+  template: # Template é a parte do Deployment que define o Pod
+    metadata:
+      name: pod-my-nginx
+      labels:
+        env: production
+    spec:
+      containers:
+        - name: nginx-container
+          image: nginx
+  selector: # Selector é a parte do Deployment que define quais Pods ele deve gerenciar
+    matchLabels:
+      env: production
+  
+  replicas: 4
+      
