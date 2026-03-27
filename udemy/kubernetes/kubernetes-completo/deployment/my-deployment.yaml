@@ -17,6 +17,8 @@ spec:
   selector: # Selector é a parte do Deployment que define quais Pods ele deve gerenciar
     matchLabels:
       env: production
-  
+  # Estratégia de atualização do Deployment, por padrão é RollingUpdate, mas pode ser Recreate(primeiro remove todos os Pods e depois cria novos)
+  # strategy:
+  #   type: Recreate
   replicas: 4
       
