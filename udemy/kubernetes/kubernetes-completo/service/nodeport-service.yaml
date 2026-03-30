@@ -1,0 +1,35 @@
+# Definindo um Pod
+apiVersion: v1
+kind: Pod
+metadata:
+  name: web-pod
+  labels:
+    type: web-app
+spec:
+  containers:
+    - name: web-server-apache
+      image: httpd
+      ports:
+        - containerPort: 80 # Aqui configuramos a porta do container que irá estar exposta, e não a porta da aplicação.
+---
+# Definindo um Service do tipo ClusterIP
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-service-nodeport
+spec:
+  type: NodePort
+  selector: # Devemos usar a label do POD para vincular o serviço ao POD
+      type: web-app
+  ports:
+    - name: http
+      nodePort: 30008 # Porta que será exposta publicamente no Node
+      port: 80 # Porta onde o serviço irá responder os clientes
+      targetPort: 80 # Porta alvo do container onde o Service irá encaminhar as requisições.
+
+# Acessando externamente
+# Rode o comando abaixo para achar a url:
+# minikube service --url frontend-service-nodeport --namespace=default http://192.168.49.2:30008
+# Ou então pegue o Internal IP do node e adicione a porta do NodePort:
+# kubectl get nodes -o wide OU kubectl get nodes -o yaml | grep address
+# OBSERVAÇÃO: Neste laboratório eu não consegui acessar via browser, mas com o curl http://192.168.49.2:30008 deu certo

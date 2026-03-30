@@ -1,0 +1,40 @@
+# Definindo um Pod
+apiVersion: v1
+kind: Pod
+metadata:
+  name: web-pod
+  labels:
+    type: web-app
+spec:
+  containers:
+    - name: web-server-apache
+      image: httpd
+      ports:
+        - containerPort: 80 # Aqui configuramos a porta do container que irá estar exposta, e não a porta da aplicação.
+    - name: web-server-tomcat
+      image: tomcat
+      ports:
+        - containerPort: 8080
+---
+# Definindo um Service do tipo ClusterIP
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-service
+spec:
+  type: ClusterIP
+  selector: # Devemos usar a label do POD para vincular o serviço ao POD
+      type: web-app
+  ports:
+    - name: http
+      port: 80 # Porta onde o serviço irá responder os clientes
+      targetPort: 80 # Porta alvo do container onde o Service irá encaminhar as requisições.
+
+# Iremos criar outro Pod para poder testar a comunicação com este serviço, mas este iremos criar de forma imperativa:
+# kubectl run -it  debian-pod --image=debian bash
+# Após entrar no terminal, rode:
+# apt update
+# apt install curl -y
+# curl <cluster-ip-service> -> curl 10.100.75.162:80
+# Se funcionar, irá retornar o html da página padrão do apache.
+# Obs: como o targetPort é somente a porta do apache(80), não conseguimos testar o tomcat(porta 8080).
