@@ -1,0 +1,34 @@
+# Definindo um Pod
+apiVersion: v1
+kind: Pod
+metadata:
+  name: web-pod
+  labels:
+    type: web-app
+spec:
+  containers:
+    - name: web-server-apache
+      image: httpd
+      ports:
+        - containerPort: 80
+---
+# Definindo um Service do tipo ClusterIP
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-service-loadbalancer
+spec:
+  type: LoadBalancer # Devemos apenas mudar o type para ser um loadbalancer.
+  selector:
+      type: web-app
+  ports:
+    - name: http
+      nodePort: 30008
+      port: 80
+      targetPort: 80
+
+# Acessando externamente
+# Rode o comando abaixo para achar a url:
+# minikube service --url frontend-service-loadbalancer
+# Pegue a url e de um curl para testar: curl + url
+# Teste essa url no browser também

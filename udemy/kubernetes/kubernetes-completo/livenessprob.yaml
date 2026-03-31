@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: liveness-pod
+spec:
+  containers:
+  - name: liveness-container
+    image: busybox # imagem com vários ferramentas de cli leve para testes
+    args: # Comandos que o container irá executar: cria um arquivo, espera 30 segundos, remove o arquivo e depois dorme por 600 segundos
+    - /bin/sh
+    - -c
+    - touch /tmp/healthy; sleep 30; rm -rf /tmp/healthy; sleep 600
+
+    # Config do liveness: fica dentro de "containers"
+    livenessProbe:
+      exec:
+        command:
+        - cat
+        - /tmp/healthy
+      initialDelaySeconds: 5 # Tempo para iniciar a primeira verificação. Cuiadado com aplicações que demoram mais para inciar!
+      periodSeconds: 5 # Tempo entre as verificações
+      failureThreshold: 3 # Número de falhas para considerar o container como não saudável
