@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: redis-pod
+spec:
+  containers:
+  - name: redis-container
+    image: redis
+    volumeMounts:
+    - name: "cache-storage" # Devemos declarar o volume antes de usá-lo!
+      mountPath: "/my-volume" # Onde será montado o meu volume dentro do container.
+
+  # Declarando volumes.
+  volumes:
+  - name: cache-storage
+    emptyDir: {} # Tipo do volume. O emptyDir é um volume temporário, ou seja, os dados armazenados nele serão perdidos quando o pod for excluído, mas não será perdido se o container for reiniciado.

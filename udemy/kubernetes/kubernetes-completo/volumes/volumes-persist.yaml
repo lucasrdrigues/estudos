@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: redis-pod
+spec:
+  containers:
+  - name: redis-container
+    image: redis
+    volumeMounts:
+    -  mountPath: "/my-data" # Caminho onde o volume será montado dentro do container.
+       name: "my-hostpath-vol" # Devemos declarar o volume antes de usá-lo!
+    
+  # Declarando volumes.
+  volumes:
+  - name: "my-hostpath-vol"
+    hostPath: # Tipo do volume. O hostPath é um volume que monta um diretório do host no container.
+      path: "/var/lib/2-persist" # Caminho onde o volume será montado no host.

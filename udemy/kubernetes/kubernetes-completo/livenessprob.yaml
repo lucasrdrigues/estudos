@@ -9,7 +9,7 @@ spec:
     args: # Comandos que o container irá executar: cria um arquivo, espera 30 segundos, remove o arquivo e depois dorme por 600 segundos
     - /bin/sh
     - -c
-    - touch /tmp/healthy; sleep 30; rm -rf /tmp/healthy; sleep 600
+    - touch /tmp/healthy; sleep 30; rm -rf /tmp/healthy; sleep 600 # Estamos provocando um "problema" de propósito para o teste do liveness probe
 
     # Config do liveness: fica dentro de "containers"
     livenessProbe:
