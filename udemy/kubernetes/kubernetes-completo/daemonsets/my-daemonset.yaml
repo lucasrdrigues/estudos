@@ -1,0 +1,25 @@
+# O arquivo de configuração do DaemonSet é muito parecido com o do ReplicaSet, a diferença é que no DaemonSet não precisamos especificar o número de réplicas, pois ele irá criar uma cópia do pod em cada nó(worker node) do cluster.
+apiVersion: apps/v1
+# kind: ReplicaSet
+kind: DaemonSet
+metadata:
+  name: frontend-rs
+  labels:
+    app: frontend
+spec:
+  template: 
+    metadata:
+      name: my-pod-webserver
+      labels:
+        apps: my-app
+        tier: frontend
+    spec:
+      containers:
+      - name: my-container-nginx
+        image: nginx
+  
+  selector:
+    matchLabels:
+      apps: my-app
+  # No daemonset não precisa da linha abaixo
+  # replicas: 4
