@@ -1,0 +1,19 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: my-job
+spec:
+  template:
+    metadata:
+      name: my-job-pod
+    spec:
+      containers:
+      - name: my-container-busybox
+        image: busybox
+        command:
+        - "bin/sh"
+        - "-c"
+        # gerando número aleatório entre 1 e 70
+        - "for i in 1 2; do echo Lucky number $i = $((1 + ramdom % 70)); done"
+      # O restartPolicy é ligado as specs do Pod e não do Job, por isso é necessário colocar dentro do template
+      restartPolicy: Never
