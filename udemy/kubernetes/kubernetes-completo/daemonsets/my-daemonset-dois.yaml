@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: frontend-rs
+  labels:
+    app: frontend
+spec:
+  # Configurando o strategy type(estratégia de atualização caso o arquivo seja modificado). O padrão é RollingUpdate, maxUnavailable é 1(config recomendada)
+  # updateStrategy:
+  #   type: RollingUpdate
+  #   rollingUpdate:
+  #     maxUnavailable: 2
+  # Configurando o strategy type para OnDelete, ou seja, o DaemonSet só irá atualizar(caso haja modificação no arquivo) os pods quando eles forem deletados manualmente.
+  # updateStrategy:
+  #   type: OnDelete
+  template: 
+    metadata:
+      name: my-pod-webserver
+      labels:
+        apps: my-app
+        tier: frontend
+    spec:
+      containers:
+      - name: my-container-nginx
+        image: nginx
+      
+  selector:
+    matchLabels:
+      apps: my-app
+

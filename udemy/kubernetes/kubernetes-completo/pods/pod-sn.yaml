@@ -1,0 +1,19 @@
+# Direcinando Pods para nodes específicos
+apiVersion: v1
+kind: Pod
+metadata:
+  name: specific-node-pod
+spec:
+  containers:
+  - name: redis
+    image: redis
+# Direcionando para um node específico usando nodeName
+  #nodeName: minikube
+# Direcionando para um node específico usando labels, mas podemos por somente em um node, diferente do DaemonSet que pode ser criado em vários nodes usando labels
+  #nodeSelector:
+  # disktype: ssd
+# Adicionando a label disktype: 
+# kubectl get nodes
+# kubectl labels nodes nome-node disktype=ssd 
+# kubectl get nodes --show-labels | grep disktype: mostra os nodes com a label disktype
+

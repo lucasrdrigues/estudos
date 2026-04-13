@@ -17,7 +17,17 @@ spec:
       containers:
       - name: my-container-nginx
         image: nginx
-  
+      # SELECIONANDO NODES PARA O DAEMONSET
+      # Definindo o nodeSelector para que o DaemonSet seja criado apenas nos nós que possuem a label disktype: ssd
+      #nodeSelector:
+      #  disktype: ssd
+       # Adicionando a label disktype: 
+       # kubectl get nodes
+       # kubectl labels nodes nome-node disktype=ssd 
+       # kubectl get nodes --show-labels | grep disktype: mostra os nodes com a label disktype
+      # Podemos selecionar o node usando o nome, dessa forma usamos o nodeName ao invés do nodeSelector, mas não conseguimos passar os nomes de vários nodes.
+      #nodeName: minikube
+      
   selector:
     matchLabels:
       apps: my-app
