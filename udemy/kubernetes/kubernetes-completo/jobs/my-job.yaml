@@ -1,8 +1,12 @@
+# Atençao: Não tem como rodar duas vezes o Job(apply seguidos), para rodar novamente este arquivo deve-se apagar o job, pois ele é uma tarefa finita e imutável.
 apiVersion: batch/v1
 kind: Job
 metadata:
   name: my-job
 spec:
+# Caso queira configurar o número de vezes a rodar para realizar multiplas tarefas adicione o campo:
+  completions: 5 # O padrão é 1(Um pod por tarefa), neste caso teremos 5 pods, cada um com uma tarefa
+  completionMode: "Indexed" # Adiciona index ao nome do job(0, 1, ...), podemos visualizar isso com get jobs
   template:
     metadata:
       name: my-job-pod
@@ -17,3 +21,7 @@ spec:
         - "for i in 1 2; do echo Lucky number $i = $((1 + ramdom % 70)); done"
       # O restartPolicy é ligado as specs do Pod e não do Job, por isso é necessário colocar dentro do template
       restartPolicy: Never
+
+# kubectl describe job my-job	-> visualizar descrição do job
+# kubectl logs my-job-879yh	-> visualizar log do job. Rode o get pods para poder pegar o nome do pod para jogar neste comando.
+# kubectl describe pod my-job-879yh -> visualizar descrição do pod
