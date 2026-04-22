@@ -5,8 +5,11 @@ metadata:
   name: my-job
 spec:
 # Caso queira configurar o número de vezes a rodar para realizar multiplas tarefas adicione o campo:
-  completions: 5 # O padrão é 1(Um pod por tarefa), neste caso teremos 5 pods, cada um com uma tarefa
+  completions: 5 # O padrão é 1(Um pod por tarefa), neste caso teremos 5 pods, cada um com uma tarefa. SOMENTE UM é executado por VEZ
   completionMode: "Indexed" # Adiciona index ao nome do job(0, 1, ...), podemos visualizar isso com get jobs
+  parallelism: 5 # O padrão é 1, neste caso teremos 5 pods rodando ao mesmo tempo realizando as tarefas.
+  backoffLimit: 3 # O padrão é 6, este campo é o número de vezes que o job irá tentar rodar caso haja falha. Após atingir o limite, o job é considerado como falho.
+  activeDeadlineSeconds: 100 # O padrão é infinito, este campo é o tempo máximo que o job pode ficar ativo. Após atingir o limite, o job é considerado como falho e os pods são parados mesmo se estiver em execução ainda.
   template:
     metadata:
       name: my-job-pod

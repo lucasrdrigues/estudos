@@ -1,0 +1,27 @@
+apiVersion: batch/v1
+kind: CronJob # Tipo de recurso para criar um CronJob no Kubernetes
+metadata:
+  name: my-cj
+spec:
+  # suspend: "true" # Suspende a execução do CronJob, deixe comentado para que o CronJob seja executado normalmente, caso queira ativar, descomente esta linha e rode o arquivo novamente
+  failedJobsHistoryLimit: 5 # Quantidade de Jobs com falha a serem mantidos no histórico
+  successfulJobsHistoryLimit: 10 # Quantidade de Jobs bem sucedidos a serem mantidos no histórico
+  schedule: "* * * * *"
+  timeZone: "America/Sao_Paulo" # Define o fuso horário para a execução
+  startingDeadlineSeconds: 3600 # Você deve rodar às xx:xx. Mas se o cluster estiver instável, você tem uma janela de tolerância de 3600 segundos para tentar iniciar este Job atrasado
+  jobTemplate:
+    spec:
+      parallelism: 5
+      completions: 10
+      completionMode: "Indexed"
+      parallelism: 5 # Número de Pods a serem executados em paralelo para este Job
+      template:
+        spec:
+          containers:
+          - name: my-container-busybox
+            image: busybox
+            command:
+            - "bin/sh"
+            - "-c"
+            - "for i in 1 2; do echo Lucky number $i = $((1 + RANDOM % 70)); done"
+          restartPolicy: Never # O Job não deve ser reiniciado em caso de falha
