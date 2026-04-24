@@ -1,0 +1,30 @@
+# OBSERVAÇÃO: Crie primeiro o configMap e depois o pod, pois o pod precisa do configMap para ser criado
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: my-cm
+  namespace: default
+data:
+  # Connection database config
+  database: mongodb
+  database_uri: mongodb://localhost:27017
+
+  # User interface
+  font.title: Arial
+  background-color: red
+  theme.1: clean
+  theme.2: dark
+---
+# Criando pod para testar o configMap
+kind: Pod
+apiVersion: v1
+metadata:
+  name: pod-cm-env
+spec:
+  containers:
+  - name: my-container
+    image: nginx
+    # Fazendo importação de TODOS os dados do ConfigMap
+    envFrom:
+    - configMapRef:
+        name: my-cm
