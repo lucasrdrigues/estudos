@@ -1,0 +1,26 @@
+# Criando um Pod utilizando um ConfigMap como volume. Desta forma, podemos criar o pod antes do configmap, porém o pod só irá subir quando o configmap for criado. Caso atualizamos o configmap, o pod já reconhecerá as mudanças, ou seja, não é necessário reiniciá-lo.
+kind: Pod
+apiVersion: v1
+metadata:
+  name: pod-cm-vol
+spec:
+  containers:
+  - name: my-container
+    image: nginx
+    envFrom:
+    # Injeção via Variáveis (Mantido conforme seu exemplo)
+    - configMapRef:
+        name: my-cm
+    # Injeção via Volume (Aparece como arquivos no diretório)
+    # Vinculando volume ao container
+    volumeMounts:
+    - name: my-vol
+      # Caminho do volume dentro do container
+      mountPath: "/etc/my-vol"
+      readOnly: true # Somente leitura
+  # Criação do volume
+  volumes:
+  - name: my-vol
+    # Vinculando o volume a um configMap
+    configMap:
+      name: my-cm

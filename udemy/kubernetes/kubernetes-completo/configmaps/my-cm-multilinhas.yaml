@@ -1,0 +1,14 @@
+# ConfigMap via File properties
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: my-cm
+data:
+  # Cada chave aqui se tornará o NOME de um arquivo dentro do volume, caso sejá vinculado a um
+  #Connection database config
+  # Ao invés de ter um arquivo para cada chave-valor, podemos ter um arquivo com várias chaves-valor dentro dele utilizando o pipe (|) para indicar que o valor é multilinha. O nome do arquivo será o nome da chave, e o conteúdo do arquivo será o valor.
+  my.config.db: |
+    database: mysql
+    database_uri: mysql://localhost:3306
+  # Podemos ter quantos arquivos quisermos dentro do mesmo configmap
+  test.field: hello

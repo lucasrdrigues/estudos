@@ -1,0 +1,10 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: my-cm
+data:
+  # Cada chave aqui se tornará o NOME de um arquivo dentro do volume, caso sejá vinculado a um
+  #Connection database config
+  database: mysql
+  database_uri: mysql://localhost:3306
+immutable: true # Tornando o configmap imutável, ou seja, não pode ser editado depois de criado. Se precisar alterar, tem que deletar e criar um novo.
