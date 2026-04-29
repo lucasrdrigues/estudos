@@ -8,3 +8,4 @@ data:
   database: mysql
   database_uri: mysql://localhost:3306
 immutable: true # Tornando o configmap imutável, ou seja, não pode ser editado depois de criado. Se precisar alterar, tem que deletar e criar um novo.
+# Para testar, rode o comando 'env' dentro do pod que for consumir este confiMap

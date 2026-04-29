@@ -24,3 +24,4 @@ spec:
     # Vinculando o volume a um configMap
     configMap:
       name: my-cm
+# Podemos acessar os valores tanto pelas variáveis de ambiente(rode o comando 'env' dentro do pod) quanto pelos arquivos no volume, ambos com o mesmo nome definido no secret

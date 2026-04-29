@@ -9,3 +9,4 @@ spec:
     envFrom:
     - configMapRef:
         name: my-cm
+        optional: true # Este configmap e opcional, ou seja, o pod pode ser criado mesmo que o configmap não exista. O mesmo serve para os volumes, veja mais sobre nas aulas de secrets.
