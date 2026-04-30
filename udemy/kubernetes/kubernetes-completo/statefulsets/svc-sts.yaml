@@ -5,7 +5,7 @@ metadata:
 spec:
   ports:
   - port: 80
-  clusterIP: None # Cria um serviço headless, sem um IP virtual
+  clusterIP: None # Cria um serviço headless, sem um IP virtual, pórem ainda tem como ser acessado pelo nome do serviço(dns: svc-sts.default.svc.cluster.local)
   selector: # Seleciona os pods com o rótulo "app: nginx-app-pods"
     app: nginx-app-pods
 ---

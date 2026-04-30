@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pedido-banco-dados
+spec:
+  accessModes:
+    - ReadWriteOnce
+  # A conexão com a automação acontece nesta linha
+  storageClassName: ebs-ssd-rapido
+  resources:
+    requests:
+      storage: 10Gi

@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-database
+spec:
+  replicas: 1 # EBS exige apenas 1 réplica para leitura/escrita
+  selector:
+    matchLabels:
+      app: db
+  template:
+    metadata:
+      labels:
+        app: db
+    spec:
+      containers:
+        - name: banco
+          image: mongo:latest
+          volumeMounts:
+            - mountPath: "/data/db"
+              name: volume-mongo
+      volumes:
+        - name: volume-mongo
+          persistentVolumeClaim:
+            # O Deployment consome o pedido, o K8s e a AWS cuidam do resto
+            claimName: pedido-banco-dados

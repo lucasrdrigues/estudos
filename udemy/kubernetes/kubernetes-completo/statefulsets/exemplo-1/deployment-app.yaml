@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-corporativa
+spec:
+  # Subiremos 3 réplicas que farão balanceamento de carga da aplicação
+  replicas: 3
+  selector:
+    matchLabels:
+      app: web-app
+  template:
+    metadata:
+      labels:
+        app: web-app
+    spec:
+      containers:
+        - name: container-app
+          image: nginx:latest
+          volumeMounts:
+            # Todas as 3 réplicas montarão esse volume no mesmo diretório interno
+            - mountPath: "/app/dados_compartilhados"
+              name: volume-storage
+      
+      volumes:
+        - name: volume-storage
+          # A mágica do desacoplamento: o Deployment só conversa com o PVC
+          persistentVolumeClaim:
+            claimName: pedido-disco-rede

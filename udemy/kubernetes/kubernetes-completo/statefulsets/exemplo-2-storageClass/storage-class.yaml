@@ -1,0 +1,14 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: ebs-ssd-rapido
+# O driver CSI que o K8s vai acionar
+provisioner: ebs.csi.aws.com
+# Retain garante que se apagarem o PVC, o disco físico não some da AWS
+reclaimPolicy: Retain
+# Aguarda o Pod nascer para criar o disco na zona correta
+volumeBindingMode: WaitForFirstConsumer
+# Parâmetros específicos da AWS
+parameters:
+  type: gp3
+  encrypted: "true"

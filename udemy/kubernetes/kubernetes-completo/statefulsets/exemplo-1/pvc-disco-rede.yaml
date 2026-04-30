@@ -1,0 +1,12 @@
+# Quando você cria um PVC, o Kubernetes entra em ação procurando um PV disponível que atenda às exigências do contrato (como tamanho em gigabytes e modo de acesso). Quando ele encontra, ele faz o "Bind" (vinculação).
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pedido-disco-rede
+spec:
+  # O pedido DEVE bater com o tipo de permissão do PV para o Kubernetes aceitar
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 20Gi # O Kubernetes procurará um PV com no mínimo 20GB livres
