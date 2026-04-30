@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc-sts
+spec:
+  ports:
+  - port: 80
+  clusterIP: None # Cria um serviço headless, sem um IP virtual
+  selector: # Seleciona os pods com o rótulo "app: nginx-app-pods"
+    app: nginx-app-pods
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: my-sts
+spec:
+  selector: # Seleciona os pods com o rótulo "app: nginx-app-pods"
+    matchLabels:
+      app: nginx-app-pods
+  serviceName: "svc-sts" # Especifica o nome do serviço headless
+  replicas: 5
+  template:
+    metadata:
+      labels:
+        app: nginx-app-pods # Rótulo para os pods do StatefulSet
+    spec:
+      containers:
+      - name: my-container
+        image: nginx:latest
+        # Define o volume mount para cada contêiner do StatefulSet, devemos definir o volume com volumeClaimTemplates
+        volumeMounts:
+        - name: my-pv
+          mountPath: /usr/share/nginx/html # Path onde o volume será montado dentro do contêiner
+  # Define os volumes persistentes para cada pod do StatefulSet
+  # Para cada um dos 5 pods criados, será criado um volume persistente usando o template definido abaixo
+  # Aqui temos a criação do volume e o claim ao mesmo tempo(ao invés de ser separado em um PersistentVolume e um PersistentVolumeClaim)
+  volumeClaimTemplates:
+  - metadata:
+      name: my-pv # Nome do volume claim template
+    spec:
+      accessModes: [ "ReadWriteOnce" ] # Modo de acesso ao volume, leitura e escrita por um único nó
+      resources:
+        requests:
+          storage: 1Gi # Definindo a quantidade de armazenamento de cada volume
+  
