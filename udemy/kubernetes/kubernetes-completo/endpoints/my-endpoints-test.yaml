@@ -1,0 +1,34 @@
+# CRIANDO ENDPOINTS INTERNOS
+# Quando uma aplicação for consumir um endpoint, deve-se apontar para o serviço, e o serviço irá encaminhar a requisição para os endpoints, que por sua vez irão encaminhar para os pods
+apiVersion: v1
+kind: Endpoints
+metadata:
+  # Precisa ter o mesmo nome do serviço para o qual os endpoints estão sendo criados, desta forma ele é ligado automaticamente ao serviço
+  name: my-endpoints-service
+subsets:
+  - addresses:
+      - ip: 77.68.88.76 # IP externo para endpoint externo, ou seja, um IP que não pertence ao cluster, e que pode ser acessado de fora do cluster
+      # IPs dos pods criados no arquivo my-endpoints-pods.yaml:
+      - ip: 10.244.0.9
+      - ip: 10.244.0.10
+    ports:
+      - port: 80 # Porta onde está rodando o serviço dentro dos pods
+--- 
+# Criando o serviço para o qual os endpoints estão sendo criados, desta forma ele é ligado automaticamente aos endpoints
+apiVersion: v1
+kind: Service
+metadata:
+  # O nome do meu endpoint precisa ser o mesmo do serviço, desta forma ele é ligado automaticamente ao serviço
+  name: my-endpoints-service
+spec:
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+
+# Observação: para testar este endpoint e os pods no outro arquivo, rode o comando kubectl run -it --image debian test-eps
+# Dentro do pod rode:
+# apt update && apt install dnsutils -y
+# nslookup my-endpoints-service -> irá retorna o IP e o dns do serviço(irá aparecer Name: my-endpoints-service.default.svc.cluster.local)
+# apt install curl -y
+# curl my-endpoints-service.default.svc.cluster.local -> deve retornar a página padrão do apache, nginx ou do endpoint externo adicionado(depende do balanceamento de carga)
