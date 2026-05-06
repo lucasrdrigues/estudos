@@ -1,0 +1,34 @@
+# Role para conceder permissões de auditoria
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: default
+  name: auditor-role
+rules:
+- apiGroups: [""] # API group vazio indica recursos core do Kubernetes(são recursos nativos como pods, services, etc.)
+  resources: ["pods", "services"] # Recursos que o Role pode acessar
+  verbs: ["get", "list", "watch"] # Verbos que o Role pode executar nesses recursos
+---
+# Role Binding para associar o Role ao usuário ou grupo
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  namespace: default
+  name: auditor-rb
+subjects: # Define os sujeitos (usuários, grupos ou contas de serviço) que receberão as permissões do Role
+- kind: User # Tipo de sujeito (pode ser User, Group ou ServiceAccount)
+  name: auditor
+  apiGroup: rbac.authorization.k8s.io # API group para RBAC 
+roleRef: # Referência ao Role que está sendo associado
+  kind: Role
+  name: auditor
+  apiGroup: rbac.authorization.k8s.io # API group para RBAC
+
+# A Jurisdição Global: Cluster
+# Se você é um engenheiro de infraestrutura e precisa gerenciar nós físicos, ou criar namespaces novos (ações que afetam a empresa inteira, não apenas uma equipe), você precisa de permissões globais. Para isso, utilizamos a mesma lógica, mas com recursos de escopo ampliado:
+
+# ClusterRole: A regra que vale para todo o cluster, sem limites de fronteira.
+
+# ClusterRoleBinding: O conector que liga o usuário à regra global.
+
+# A interação entre os objetos (Interaction Between Objects) é sempre essa dança a três: O User (Usuário autenticado) tenta uma ação -> O K8s checa o RoleBinding -> O Binding aponta para o Role -> O Role verifica se a regra e o verbo combinam com a tentativa. Se tudo casar, o acesso é liberado.

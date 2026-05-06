@@ -1,0 +1,57 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-eps-service
+spec:
+  ports:
+    - name: http
+      port: 80
+      # targetPort: 80 # Se for omitido, terá o mesmo valor do "port"
+--- 
+apiVersion: discovery.k8s.io/v1
+kind: EndpointSlice
+metadata:
+  # O nome não precisa ser o mesmo do Service assim como era no Endpoint
+  name: my-eps
+  # Definindo a label que irá ligar o EndpointSlice ao Service desejado
+  labels:
+    kubernetes.io/service-name: my-eps-service
+addressType: IPv4 # Temos o IPv6 e o FQDN também
+endpoints:
+- addresses:
+    - 10.244.0.10 # IP do Pod Apache criado no arquivo my-endpoints-pods.yaml
+ports:
+- name: http
+  port: 80
+  protocol: TCP
+
+# Observação: para testar este endpoint e os pods no outro arquivo, rode o comando kubectl run -it --image debian test-eps
+# Dentro do pod rode:
+# apt update && apt install dnsutils curl -y
+# nslookup my-eps-service (nome do serviço criado) -> irá retorna o IP e o dns do serviço(irá aparecer Name: my-eps-service.default.svc.cluster.local)
+# curl my-eps-service.default.svc.cluster.local -> deve retornar a página padrão do apache ou nginx
+
+--- 
+# EndpointSlice 2 - poderia ser em um arquivo diferente!
+apiVersion: discovery.k8s.io/v1
+kind: EndpointSlice
+metadata:
+  # O nome não precisa ser o mesmo do Service assim como era no Endpoint
+  name: my-eps-2
+  # Definindo a label que irá ligar o EndpointSlice ao Service desejado
+  labels:
+    kubernetes.io/service-name: my-eps-service
+addressType: IPv4 # Temos o IPv6 e o FQDN também
+endpoints:
+- addresses:
+    - 10.244.0.11 # IP do Pod Nginx criado no arquivo my-endpoints-pods.yaml
+ports:
+- name: http
+  port: 80
+  protocol: TCP
+
+# Observação: para testar este endpoint e os pods no outro arquivo, rode o comando kubectl run -it --image debian test-eps
+# Dentro do pod rode:
+# apt update && apt install dnsutils curl -y
+# nslookup my-eps-service (nome do serviço criado) -> irá retorna o IP e o dns do serviço(irá aparecer Name: my-eps-service.default.svc.cluster.local)
+# curl my-eps-service.default.svc.cluster.local -> deve retornar a página padrão do apache ou nginx

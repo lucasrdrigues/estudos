@@ -29,6 +29,6 @@ spec:
 # Observação: para testar este endpoint e os pods no outro arquivo, rode o comando kubectl run -it --image debian test-eps
 # Dentro do pod rode:
 # apt update && apt install dnsutils -y
-# nslookup my-endpoints-service -> irá retorna o IP e o dns do serviço(irá aparecer Name: my-endpoints-service.default.svc.cluster.local)
+# nslookup my-endpoints-service (nome do serviço criado) -> irá retorna o IP e o dns do serviço(irá aparecer Name: my-endpoints-service.default.svc.cluster.local)
 # apt install curl -y
 # curl my-endpoints-service.default.svc.cluster.local -> deve retornar a página padrão do apache, nginx ou do endpoint externo adicionado(depende do balanceamento de carga)

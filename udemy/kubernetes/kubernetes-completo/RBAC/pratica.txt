@@ -1,0 +1,38 @@
+# PRÁTICA DO MÓUDULO
+mkdir certificate && cd certificate -> cria e entra no diretório
+
+openssl genrsa -out auditor.key 2048 -> cria chave privada no formato rsa com 2048 bits e joga ela no arquivo auditor.key
+
+openssl req -new -key auditor.key -out auditor.csr -subj "/CN=auditor/O=MyCompany" -> criação do csr(client signing request) para que depois possamos criar um certificado
+
+openssl x509 -req -in auditor.csr -CA ~/.minikube/ca.crt -CAkey ~/.minikube/ca.key -CAcreateserial -out auditor.crt -days 365 -> gerando o certificado
+k
+ubectl config set-credentials auditor --client-certificate=auditor.crt --client-key=auditor.key -> criando usuário
+
+kubectl config set-context auditor-context --cluster=minikube --user=auditor -> criando contexto de auditoria
+
+kubectl config view -> visualiza a config
+
+kubectl config current-context -> verifica o contexto atual
+
+kubectl config get-contexts -> mostra os contextos
+
+kubectl config use-context auditor-context -> alterar para outro contexto com permissões diferentes
+
+kubectl get pods -> irá retornar um erro, pois ainda não demos nenhuma permissão ao usuário deste contexto
+
+# Verifica permissões
+kubectl auth can-i '*' '*' --all-namespaces -> posso executar qualquer verbo(primeiro asterisco) em qualquer recurso(segundo asterisco)? Retorna Sim ou Nao
+kubectl auth can-i '*' '*' -n=default -> posso executar qualquer verbo(primeiro asterisco) em qualquer recurso(segundo asterisco) no namespace default?
+kubectl auth can-i get pods -> posso executar get pods?
+
+# Administrando
+kubectl apply -f <arquivo-role-e-rolebinding.yaml>
+kubectl get role
+kubectl get rolebinding
+kubectl delete -f <arquivo-role-e-rolebinding.yaml>
+
+# Removendo
+kubectl config delete-context auditor-context
+kubectl config unset users.auditor
+rm -rf certificate
