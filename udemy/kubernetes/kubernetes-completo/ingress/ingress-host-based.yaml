@@ -1,0 +1,35 @@
+# Neste modelo, o Ingress lê o nome do domínio em si (o que vem antes da barra). Isso permite hospedar múltiplas empresas, marcas ou ambientes no mesmo cluster Kubernetes, utilizando exatamente o mesmo IP público.
+
+# Imagine que você quer rodar os serviços da ArchSoft e o projeto educacional StackSecure no mesmo cluster para otimizar custos de infraestrutura.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: multi-domain-ingress
+spec:
+  ingressClassName: nginx
+  rules:
+  # Regra para o primeiro domínio
+  - host: api.archsoft.com.br
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: archsoft-core-api
+            port:
+              number: 80
+              
+  # Regra para o segundo domínio completamente isolado
+  - host: portal.stacksecure.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: stacksecure-lms-frontend
+            port:
+              number: 80
+
+# Se o usuário digitar api.archsoft.com.br, o Ingress joga o pacote de rede para o serviço A. Se digitar portal.stacksecure.com, joga para o serviço B. Se alguém apontar um domínio aleatório para o IP do seu servidor que não esteja listado nessas regras de host, o Ingress vai bloquear a requisição e retornar um erro "404 Not Found" padrão, protegendo a infraestrutura.

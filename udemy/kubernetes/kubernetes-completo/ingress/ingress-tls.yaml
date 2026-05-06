@@ -1,0 +1,80 @@
+# Um dos maiores poderes do Ingress é centralizar a gestão de certificados de segurança. Se você tivesse 50 microsserviços, gerenciar e renovar 50 certificados SSL dentro de cada container seria inviável.
+
+# O Ingress permite fazer a "Terminação TLS". O tráfego vem criptografado do cliente até a porta do Ingress. O Ingress descriptografa o tráfego usando o certificado, aplica as regras de roteamento que vimos acima e envia o tráfego em texto claro (HTTP normal) para a rede interna do cluster. Como a rede interna é isolada e segura, retiramos o peso do processamento de criptografia dos pods da aplicação.
+
+# Para fazer isso, criamos um Secret do tipo tls contendo o certificado e a chave, e fazemos uma leve modificação no arquivo do Ingress.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: secure-ingress
+spec:
+  # Bloco exclusivo para gerenciar a criptografia
+  tls:
+  - hosts:
+    - sistema.archsoft.com.br
+    # O K8s vai buscar o certificado guardado neste cofre
+    secretName: archsoft-tls-secret 
+    
+  rules:
+  - host: sistema.archsoft.com.br
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: sistema-svc
+            port:
+              number: 80
+---
+# Para que a Terminação TLS do Ingress funcione corretamente, o Kubernetes exige que o certificado de segurança seja armazenado em um cofre específico. Diferente de senhas comuns de banco de dados (que usam o tipo Opaque), certificados digitais utilizam um tipo nativo do Kubernetes chamado kubernetes.io/tls.
+
+# Este tipo de Secret possui uma validação interna rígida: ele exige que você forneça obrigatoriamente duas chaves exatas chamadas tls.crt e tls.key. Se você tentar usar nomes diferentes, o Ingress Controller não conseguirá ler o cofre.
+
+# Abaixo, detalho o arquivo YAML correspondente ao archsoft-tls-secret mencionado na explicação anterior, e em seguida, a forma profissional de criá-lo.
+
+# 1. A Estrutura YAML do Secret TLS
+apiVersion: v1
+kind: Secret
+metadata:
+  name: archsoft-tls-secret
+  # Recomenda-se colocar no mesmo namespace onde o Ingress será criado
+  namespace: default 
+# O tipo estrito para certificados web
+type: kubernetes.io/tls
+data:
+  # O certificado público (sua chave pública + a assinatura da Autoridade Certificadora)
+  # O valor deve estar codificado em Base64
+  tls.crt: |
+    LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUZOVENDQkI2Z0F3SUJBZ0lT
+    QkFaWkptUGl5bE9xbnBCS1R0NlBxcWhzTUEwR0NTcUdTSWIzRFFFQkN3VUEKTURJ
+    ... (dezenas de linhas em base64 omitidas) ...
+    Q2tJS1RBSzFWcFFKQUw5cUcwcnBnNXZXUFZtRGdWRjNNMndPQT09Ci0tLS0tRU5E
+    IENFUlRJRklDQVRFLS0tLS0K
+    
+  # A chave privada do seu servidor (O segredo absoluto que não pode vazar)
+  # O valor também deve estar codificado em Base64
+  tls.key: |
+    LS0tLS1CRUdJTiBQUklWQVRFIEtFWS0tLS0tCk1JSUV2Z0lCQURBTkJna3Foa2lH
+    OXcwQkFRRUZBQVNDQktnd2dnU2tBZ0VBQW9JQkFRRHFyN3ZZN2JmYTBtcFIKcmF5
+    ... (dezenas de linhas em base64 omitidas) ...
+    MjZ0bklOaTh4TUV3Z1lKMWwrc29yU0d1OHc2Y1g4RGNmSHc9PQotLS0tLUVORCBQ
+    UklWQVRFIEtFWS0tLS0tCg==
+
+# 2. A Prática Profissional: Criação Imperativa
+# Copiar e colar blocos gigantes de texto Base64 em um arquivo YAML é extremamente suscetível a erros humanos (como quebras de linha invisíveis) e é um risco de segurança se esse arquivo YAML for "comitado" sem querer no GitHub da empresa.
+
+# Por isso, a forma mais comum e segura de criar um Secret TLS no dia a dia é não escrever o YAML, mas sim usar o terminal apontando diretamente para os arquivos .crt e .key gerados pela sua equipe de segurança.
+
+# O comando abaixo lê os arquivos do seu computador, converte para Base64 automaticamente em memória e injeta direto no banco de dados do cluster (etcd):
+# kubectl create secret tls archsoft-tls-secret \
+#   --cert=/caminho/seguro/no/seu/pc/archsoft_com_br.crt \
+#   --key=/caminho/seguro/no/seu/pc/archsoft_com_br.key \
+#   -n default
+
+# 3. A Realidade do Mercado: O fim do trabalho manual (Cert-Manager)
+# Em arquiteturas de produção modernas, gerenciar arquivos de certificados manualmente (comprar, baixar, criar Secret, lembrar de renovar daqui a 1 ano) é considerado uma prática obsoleta.
+
+# A solução padrão da indústria é a instalação de um operador chamado cert-manager no seu cluster. O cert-manager se integra com o Let's Encrypt (uma autoridade certificadora gratuita e automatizada).
+
+# Quando você escreve o seu arquivo Ingress, você adiciona apenas uma anotação dizendo "cert-manager, proteja este Ingress". O próprio cert-manager entra em contato com o Let's Encrypt, prova que você é dono do domínio, emite o certificado, cria o Secret TLS sozinho e o conecta ao seu Ingress. E o melhor: ele renova o Secret automaticamente a cada 60 dias sem qualquer intervenção humana.

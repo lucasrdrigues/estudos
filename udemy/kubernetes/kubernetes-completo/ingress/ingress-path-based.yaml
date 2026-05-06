@@ -1,0 +1,33 @@
+# Roteamento Baseado em Caminho (Path-based Routing):
+# Esta é a estratégia onde o Ingress lê o que vem depois da barra / na URL para decidir o destino. É excelente para dividir monolitos ou estruturar APIs RESTful no mesmo domínio.
+
+# Imagine que você está estruturando o sistema principal da ArchSoft. O tráfego da página inicial deve ir para o frontend (Next.js), enquanto qualquer chamada para /api deve ser desviada para os pods de backend (Node.js/TypeScript).
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: archsoft-ingress-paths
+spec:
+  # Define qual motor vai executar estas regras. 
+  # Essencial se você tiver mais de um controller no cluster.
+  ingressClassName: kong 
+  rules:
+  - http:
+      paths:
+      # Regra 1: Chamadas para a API
+      - path: /api
+        pathType: Prefix
+        backend:
+          service:
+            name: archsoft-backend-svc
+            port:
+              number: 8080
+      # Regra 2: Chamadas para o site (O caminho raiz deve sempre ficar por último)
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: archsoft-frontend-svc
+            port:
+              number: 80
+              
+# Neste cenário, o pathType: Prefix indica que qualquer coisa após /api (como /api/users ou /api/auth) também será encaminhada para o backend. Se usássemos Exact, o roteamento só funcionaria se a URL fosse estritamente /api sem nada a mais.
