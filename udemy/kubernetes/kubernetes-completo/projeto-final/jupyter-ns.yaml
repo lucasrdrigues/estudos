@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: jupyter
+  # Annotations são metadatas adicionais que podem ser usadas para armazenar informações extras sobre o recurso. 
+  annotations:
+    desc: "Namespace for Jupyter Notebook Application."
+    proj: "Final Project K8s Course"
+    owner: "Lucas Rodrigues"
+    phone: "(00) 00000-0000"
+    
