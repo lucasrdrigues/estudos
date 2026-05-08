@@ -1,0 +1,31 @@
+# Criado a partir de: kubectl get svc jupyter-svc -n jupyter -o yaml > jupyter-svc.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: "2026-05-08T20:00:12Z"
+  labels:
+    app: jupyter-app
+  name: jupyter-svc
+  namespace: jupyter
+  resourceVersion: "2760"
+  uid: f42e0aca-ff4d-42e7-9917-3417448c4059
+spec:
+  clusterIP: 10.104.81.178
+  clusterIPs:
+  - 10.104.81.178
+  externalTrafficPolicy: Cluster
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  - nodePort: 30000
+    port: 8888
+    protocol: TCP
+    targetPort: 8888
+  selector:
+    app: jupyter-pods
+  sessionAffinity: None
+  type: NodePort
+status:
+  loadBalancer: {}

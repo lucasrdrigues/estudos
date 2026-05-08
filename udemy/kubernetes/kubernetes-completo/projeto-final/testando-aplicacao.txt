@@ -1,7 +1,66 @@
-# OBS: Essa é a fase onde testamos a aplicação criada somente com o dp e o ns, por enquanto estamos sem o svc.
-
 # Mapeamento de Portas
 Agora vamos fazer um mapeamento entre portas(forward externo), onde vamos acessar no servidor a porta X e ela encaminhará para a porta dentro do container:
 kubectl get pods -n jupyter
 kubectl port-forward <nome-pod> 8080:8888 -n jupyter(caso estivesse em outro namespace padrão) -> porta-servidor:porta-container
 ALERTA: acesse via http://localhost:8080 e não colocando o ip do minikube
+
+# OBS: Até aqui essa foi a fase onde testamos a aplicação criada somente com o dp e o ns, por enquanto estamos sem o svc.
+
+# Fase 6: Migrando aplicação para Service
+kubectl expose deployment jupyter-dp -n jupyter --type=NodePort --name=jupyter-svc -> este comando cria um service, se adicionar  flag --dry-run=client no final, ele apenas simula a execução
+kubectl get svc jupyter-svc -n jupyter -o yaml -> visualiza o yaml
+minikube service jupyter-svc -n jupyter -> visualiza as urls(uma delas trás a url com ip do minikube, mas este nao funciona) para testar o service e cria um tunnel automaticamente para poder acessar via localhost(ou por 127.0.0.1) tambem
+minikube service jupyter-svc -n jupyter --url -> mesma coisa de cima, mas trás somente a url de acesso
+
+# Na forma cima, usamos o comando do minikube para criar URL automaticamente, na forma abaixo, vamos criar nós mesmo uma
+kubectl get nodes -o yaml | grep address -> trás ip do minikube
+kubectl get svc -n jupyter -o wide -> trás informaçõe sobre porta, entre outros sobre o svc. Lembra-se de colocar o namespace
+kubectl get svc jupyter-svc -n jupyter -o yaml | grep nodePort -> trás informaçõe somente da porta
+Pegue o endereço e a porta e junte para criar a URL.
+
+# OBS: Como estamos usando o driver docker, precisamos acessar via minikube service jupyter-svc -n jupyter --url, ou ent para testar entre dentro do minikube com minikube ssh e rode o comando curl 192.168.49.2:31512/lab ou curl localhost:31512/lab
+
+# Fase 7: Migrando a porta da aplicação
+kubectl edit service jupyter-svc -n jupyter - abre com o vim, para abrir com nano use: KUBE_EDITOR="nano" kubectl edit service jupyter-svc -n jupyter
+Este comando já aplica automaticamente quando voce sai dele
+
+# Fase 8: Escalando a aplicação
+kubectl get svc jupyter-svc -o yaml > jupyter-svc.yaml -> joga yaml dentro de um arquivo
+
+# Fase 9: Atualizando aplicação
+kubectl set image -n jupyter deployment/jupyter-dp jupyter-container=jupyter/minimal-notebook:python-3.10 -> atualizando imagem do container via comando imperativo
+
+# TEORIA IMPORTANTE
+A Arquitetura das "Três Camadas"
+Camada 1 (Externa): O seu sistema operacional Windows.
+
+Camada 2 (Intermediária): O WSL2 (Ubuntu), que roda como uma máquina virtual super leve dentro do Windows.
+
+Camada 3 (Interna): O container Docker. Quando você iniciou o Minikube usando o driver do Docker, o Minikube subiu um container gigante lá dentro do Ubuntu para atuar como o seu "Nó" (Servidor) do Kubernetes.
+
+1. Por que pegar o IP e a Porta (192.168.49.2:31512) não funciona no navegador do Windows?
+O IP 192.168.49.2 é um endereço privado gerado pela rede interna do Docker (Camada 3) lá dentro do Ubuntu (Camada 2).
+
+O seu navegador no Windows (Camada 1) não tem um "mapa" (tabela de roteamento) que ensine a ele como chegar na rede do Docker. Quando você digita http://192.168.49.2:31512 no Chrome, o Windows olha para esse IP e tenta achá-lo na rede do seu roteador Wi-Fi da sua casa. Como esse IP não existe na rede da sua casa, a conexão dá Timeout (falha).
+
+2. Por que o comando minikube service resolve o problema?
+Os desenvolvedores do Minikube sabem que essa barreira de rede existe no Windows/Mac. Quando você roda o comando minikube service jupyter-svc -n jupyter --url, o Minikube faz um truque de mágica nos bastidores:
+
+Ele ignora o IP isolado (192.168.x.x) e cria um túnel direto (Port-Forwarding) entre o serviço lá no fundo do Kubernetes e o localhost (127.0.0.1) do seu sistema.
+
+Graças a uma integração nativa da Microsoft, o Windows compartilha o localhost com o WSL2. Portanto, quando o túnel do Minikube joga o tráfego para 127.0.0.1:alguma-porta-aleatoria, o seu navegador no Windows consegue acessar a aplicação perfeitamente.
+
+3. Por que acessar via minikube ssh funciona?
+Quando você executa minikube ssh, você sai do seu Ubuntu (Camada 2) e se "teletransporta" para dentro do container do Docker (Camada 3).
+
+Agora você está literalmente sentado na mesma máquina física virtual que possui o IP 192.168.49.2. Como você está do lado de dentro do muro, executar um curl 192.168.49.2:31512/lab funciona de imediato, pois não há problemas de roteamento. A máquina está chamando a si mesma.
+
+Resumo para a vida real (Produção vs Laboratório)
+Guarde esta anotação nos seus estudos: Este problema é exclusivo do ambiente de laboratório local (Minikube/Docker/WSL).
+
+Se amanhã você for trabalhar em uma nuvem real (AWS EKS, Google GKE, Azure AKS):
+
+Quando você criar um serviço do tipo NodePort, o Node terá um IP público/privado real da nuvem (como um IP de uma máquina EC2 da Amazon) que será diretamente roteável e acessível pela rede corporativa, sem precisar de túneis do Minikube.
+
+Em produção, nós raramente usamos NodePort para expor aplicações finais. Usaremos o tipo LoadBalancer ou, melhor ainda, um recurso chamado Ingress, que cria URLs bonitas (como https://jupyter.minhaempresa.com) e entrega o tráfego direto para os seus Pods.
+
