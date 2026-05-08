@@ -4,5 +4,4 @@
 Agora vamos fazer um mapeamento entre portas(forward externo), onde vamos acessar no servidor a porta X e ela encaminhará para a porta dentro do container:
 kubectl get pods -n jupyter
 kubectl port-forward <nome-pod> 8080:8888 -n jupyter(caso estivesse em outro namespace padrão) -> porta-servidor:porta-container
-
-# Obs importante: Estou usando o drive do docker, ao tentar acessar as aplicações para testar, dá erro, pois o docker está em uma rede separada e não está mapeando a porta para o minikube.
+ALERTA: acesse via http://localhost:8080 e não colocando o ip do minikube
