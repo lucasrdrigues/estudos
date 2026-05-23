@@ -1,0 +1,2 @@
+1 - Para subir use npm run dev
+2 - Quando for subir a aplição sem ser em modo de dev, rode com npm build e depois npm start.

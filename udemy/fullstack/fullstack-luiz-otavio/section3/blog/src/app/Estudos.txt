@@ -1,0 +1,2 @@
+1 - Essa pasta de App, é do roteamento do NextJS, então cuidado ao mexer nela, evite criar coisas aqui dentro e colocar o mesmo nome dos arquivos que já estão aqui dentro dela!
+2 - Crie pastas como components, libs, entre outros fora da pasta de App(isso não é regra, pe recomendação)
