@@ -1,0 +1,96 @@
+// EXEMPLO DE ARQUIVO STATE - ARQUIVO QUE GUARDA AS CONFIGS DO ESTADO DE UM RECURSO CRIADO 
+// Quando tem um recurso criado, também temos um arquivo chamado .terraform.tfstate.lock.info - este é o arquivo de bloqueio do estado, que é criado automaticamente quando o Terraform está executando uma operação que modifica o estado. Ele é usado para evitar que múltiplas operações sejam executadas simultaneamente, o que poderia causar corrupção do estado. O arquivo de bloqueio é removido automaticamente quando a operação é concluída, mas se o processo for interrompido de forma inesperada, ele pode permanecer e precisar ser removido manualmente.
+{
+  "version": 4,
+  "terraform_version": "1.15.3",
+  "serial": 2,
+  "lineage": "d2290b58-db02-a59f-b4a5-d532fc0c9138",
+  "outputs": {
+    "bucket_arn": {
+      "value": "arn:aws:s3:::lucas-local-state",
+      "type": "string"
+    },
+    "bucket_id": {
+      "value": "lucas-local-state",
+      "type": "string"
+    }
+  },
+  "resources": [
+    {
+      "mode": "managed",
+      "type": "aws_s3_bucket",
+      "name": "bucket",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "acceleration_status": "",
+            "acl": null,
+            "arn": "arn:aws:s3:::lucas-local-state",
+            "bucket": "lucas-local-state",
+            "bucket_domain_name": "lucas-local-state.s3.amazonaws.com",
+            "bucket_prefix": null,
+            "bucket_regional_domain_name": "lucas-local-state.s3.amazonaws.com",
+            "cors_rule": [],
+            "force_destroy": false,
+            "grant": [
+              {
+                "id": "1627bd779c02e1502399941e9bbe6b3f4182a5fcdf0b806bd2d3a3663ae78456",
+                "permissions": [
+                  "FULL_CONTROL"
+                ],
+                "type": "CanonicalUser",
+                "uri": ""
+              }
+            ],
+            "hosted_zone_id": "Z3AQBSTGFYJSTF",
+            "id": "lucas-local-state",
+            "lifecycle_rule": [],
+            "logging": [],
+            "object_lock_configuration": [],
+            "object_lock_enabled": false,
+            "policy": "",
+            "region": "us-east-1",
+            "replication_configuration": [],
+            "request_payer": "BucketOwner",
+            "server_side_encryption_configuration": [
+              {
+                "rule": [
+                  {
+                    "apply_server_side_encryption_by_default": [
+                      {
+                        "kms_master_key_id": "",
+                        "sse_algorithm": "AES256"
+                      }
+                    ],
+                    "bucket_key_enabled": false
+                  }
+                ]
+              }
+            ],
+            "tags": null,
+            "tags_all": {
+              "managed-by": "Terraform",
+              "owner": "Lucas"
+            },
+            "timeouts": null,
+            "versioning": [
+              {
+                "enabled": false,
+                "mfa_delete": false
+              }
+            ],
+            "website": [],
+            "website_domain": null,
+            "website_endpoint": null
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjM2MDAwMDAwMDAwMDAsInJlYWQiOjEyMDAwMDAwMDAwMDAsInVwZGF0ZSI6MTIwMDAwMDAwMDAwMH19"
+        }
+      ]
+    }
+  ],
+  "check_results": null
+}
