@@ -1,0 +1,6 @@
+Tecnologias usadas neste projeto:
+- Vite, ReactJS, TypeScript
+
+Inicinado o projeto:
+- npm create vite@latest -> cria o projeto usando vite
+- npm run dev -> roda a aplicação
