@@ -1,0 +1,9 @@
+/* Este é um css global */
+body {
+    font-family: sans-serif;
+    font-size: 30px;
+}
+
+h1 {
+    background-color: var(--primary-color);
+}

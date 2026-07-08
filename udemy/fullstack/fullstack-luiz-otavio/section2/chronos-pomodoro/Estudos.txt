@@ -1,0 +1,8 @@
+ANOTAÇÕES
+Propósito das pastas do VITE
+public - arquivos publicos como imagens, favicon, e outros. Podemos puxar elas apenas usando /nome_arquivo.ext
+src -  onde fica o código principal
+index.html - html principal do projeto, como temos uma single page aplication, os componentes simulam uma mudança de página, porém isso não ocorre. Ou seja, nós não saímos deste arquivo para nada, o React é renderizado dentro dela.
+eslint - correção para sintaxe
+package-lock.json - versões oficiais das coisas oficiais que vamos usar no projeto.
+package.json - dependencias do projeto

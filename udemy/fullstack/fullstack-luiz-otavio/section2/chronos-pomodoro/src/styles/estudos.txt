@@ -1,0 +1,1 @@
+Esta pasta é opcional, aqui é onde vamos colocar os estilos globais da aplicação
