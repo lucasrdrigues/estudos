@@ -1,22 +1,28 @@
-import { Heading } from './components/Heading'
 // Precisamos importar primeiro as variáveis
 import './styles/theme.css'
 import './styles/global.css'
-import { TimerIcon } from 'lucide-react'
+
+import { Container } from './components/Container'
+import { Heading } from './components/Heading'
 
 export function App() {
     return (
         <>
-            <Heading>
-                {/* npm install lucide-react - library com vários icones para usarmos */}
-                Olá, Mundo!
-                <button>
-                    <TimerIcon />
-                </button>
-            </Heading>
-            <p>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.
-            </p>
+            <Container>
+                <Heading>LOGO</Heading>
+            </Container>
+
+            <Container>
+                <Heading>MENU</Heading>
+            </Container>
+
+            <Container>
+                <Heading>FORM</Heading>
+            </Container>
+
+            <Container>
+                <Heading>FOOTER </Heading>
+            </Container>
         </>
-    )
+    );
 }

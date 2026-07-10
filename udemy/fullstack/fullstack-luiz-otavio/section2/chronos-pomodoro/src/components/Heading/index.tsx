@@ -1,4 +1,5 @@
-import styles from './Heading.module.css'
+// Usamos o nome do arquivo como index, pois quando formos importar no App.tsx, podemos importar apenas o nome da pasta, que o React vai procurar automaticamente pelo arquivo index.tsx dentro dela.
+import styles from './styles.module.css'
 
 // Fazendo tipagem TS para as props do componente
 type HeadingProps = {
