@@ -1,0 +1,10 @@
+/* O css modules serve para evitar conflitos de nomes de classes no CSS, quando formos estilizar um elemento a partir de uma classe devemos importar o módulo e usar o nome_import.nome_classe_criada dentro do className. Desta forma podemos criar outro arquivo css com o mesmo nome da classe que ele não irá colidir.*/
+/* Usamos o .module pois estamos usando um arquivo de css solto, para ele não gerar conflitos usamos essa extensão*/
+.heading {
+    background-color: purple;
+    color: black;
+}
+
+.cyan {
+    color: cyan;
+}

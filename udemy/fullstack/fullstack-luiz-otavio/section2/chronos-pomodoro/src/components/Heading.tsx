@@ -1,13 +1,13 @@
-// import "qualquer_nome" from ...
 import styles from './Heading.module.css'
 
-export function Heading() {
-    // Não podemos usar class, pois ela é uma palavra reservada do JS. Por isso usamos className.
-    // este .heading é o nome da classe que criamos no arquivo Heading.module.css.
+// Fazendo tipagem TS para as props do componente
+type HeadingProps = {
+    // React.ReactNode é um tipo que representa qualquer coisa que pode ser renderizada pelo React, incluindo elementos JSX, strings, números, arrays e fragmentos.
+    children: React.ReactNode;
+}
 
-    // Podemos usar o template string para concatenar classes, caso queiramos adicionar mais de uma classe.
-    // const classes = `${styles.heading} ${styles.cyan}`
-    // return <h1 className={classes}>Hello World!</h1> ou podemos jogar direto: return <h1 className={`${styles.heading} ${styles.cyan}`}>Hello World!</h1>
-
-    return <h1 className={styles.cyan}>Hello World!</h1>
+// Desestruturando as props do componente, para não precisar usar props.children
+// Antes estava export function Heading(props: HeadingProps) {}
+export function Heading({ children }: HeadingProps) {
+    return <h1 className={styles.heading}>{children}</h1>
 }

@@ -1,5 +1,5 @@
 Tecnologias usadas neste projeto:
-- Vite, ReactJS, TypeScript
+- Vite, ReactJS, TypeScript, CSS
 
 Inicinado o projeto:
 - npm create vite@latest -> cria o projeto usando vite
