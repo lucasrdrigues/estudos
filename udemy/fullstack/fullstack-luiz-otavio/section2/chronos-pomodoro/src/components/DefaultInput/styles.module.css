@@ -1,0 +1,8 @@
+.container {
+    /* clamp serve para definir um intervalo de valores para a font-size, 8rem para telas pequenas e 16rem para telas grandes, o 25vw é o valor intermediário */
+    font-size: clamp(8rem, 25vw, 16rem);
+    font-weight: bold;
+    text-align: center;
+    /* line-height serve para modificar o espaçamento entre as linhas de um texto */
+    line-height: 1.3;
+}

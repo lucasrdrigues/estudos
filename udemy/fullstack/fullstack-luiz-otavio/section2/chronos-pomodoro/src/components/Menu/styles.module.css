@@ -1,31 +1,29 @@
-.logo {
+.menu {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 2.4rem;
-    padding-top: 3.2rem;
+    gap: 1.6rem;
 }
 
-.logoLink {
-    display: flex;
-    flex-direction: column;
+.menuLink {
+    display: inline-flex;
     align-items: center;
     justify-content: center;
     font-weight: bold;
-    gap: 0.4rem;
-    font-size: 4.2rem;
-    text-decoration: none;
-    color: var(--primary);
+    background-color: var(--primary);
+    color: var(--text-over-primary);
     /* Transição ao passar o mouse em cima. Em conjunto com o filter abaixo */
-    transition: all 0.1s ease-in-out; 
+    transition: all 0.1s ease-in-out;
+    padding: 1rem;
+    border-radius: 0.8rem;
 }
 
-.logoLink:hover {
+.menuLink:hover {
     filter: brightness(80%);
 }
 
 /* poderiamos por somente um size={64} para aumentar o tamanho do ícone, mas com CSS ele vira svg: */
-.logoLink svg {
-    width: 6.4rem;
-    height: 6.4rem;
+.menuLink svg {
+    width: 2.5rem;
+    height: 2.5rem;
 }
