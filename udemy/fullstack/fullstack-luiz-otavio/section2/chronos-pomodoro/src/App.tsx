@@ -27,7 +27,7 @@ export function App() {
             <Container>
                 <form className="form" action="">
                     <div className="formRow">
-                        <DefaultInput id='meuInput' type='text' />
+                        <DefaultInput labelText='task' id='meuInput' type='text' title='Exemplo para o ...props ou ...rest'/>
                     </div>
 
                     <div className="formRow">
