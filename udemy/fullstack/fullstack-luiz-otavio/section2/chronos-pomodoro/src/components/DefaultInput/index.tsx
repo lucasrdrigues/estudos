@@ -1,3 +1,4 @@
+import styles from './styles.module.css';
 // A funcionalidade de intersection abaixo é somente do typescript
 type DefaultInputProps = {
     // Como no type do input pode vir não somente texto, precisamos usar o union type para aceitar outros tipos de input, como number, password, etc.
@@ -11,11 +12,11 @@ type DefaultInputProps = {
 // O & serve para juntar os tipos, ou seja, o DefaultInputProps vai aceitar todos os tipos de input, como text, number, search, etc. Desta forma não precisa ter código nenhum dentro dessa chave, pois o & já faz isso. O React.ComponentProps<'input'> é um tipo que já existe no React e que representa todas as props que um input pode ter, como type, value, onChange, etc.
 } & React.ComponentProps<'input'>
 
-// Suponha que la no App.tsx a gente a passe a propiedade "title"(podemos fazer isso por causa do React.ComponentProps... acima, que nos permite colocar qualquer propiedade no input lá no App.tsx), se ela não tiver sendo pegada no export function... ela não sera pegada, somente as que estão lá explicitas. Para que possamos pegar TODAS as propiedades, devemos usar ...nome(a convenção é usar ...props, mas poderia ser qualquer nome)
+// Suponha que la no App.tsx a gente a passe a propiedade "title"(podemos fazer isso por causa do React.ComponentProps... acima, que nos permite colocar qualquer propiedade no input lá no App.tsx), se ela não tiver sendo pegada no export function... ela não sera pegada, somente as que estão lá explicitas. Para que possamos pegar TODAS as propiedades, devemos usar ...nome(a convenção é usar ...props, mas poderia ser qualquer nome, assim como ...rest)
 
 // export function DefaultInput({ ...props }: DefaultInputProps) {
 // export function DefaultInput({ id, type, labelText, ...props }: DefaultInputProps) {
-export function DefaultInput({ id, type, labelText }: DefaultInputProps) {
+export function DefaultInput({ id, type, labelText, ...rest }: DefaultInputProps) {
     return (
         <>
         {/* AVISO: Neste caso, como o label não é opcional no nosso projeto, não estou usando condicional abaixo. */}
@@ -38,8 +39,10 @@ export function DefaultInput({ id, type, labelText }: DefaultInputProps) {
             {/* Código sem a condição */}
             <label htmlFor={id}>{labelText}</label>
             <input
+                className={styles.input}
                 id={id}
                 type={type}
+                {...rest}
                 // {...rest} ou {...props} // Caso fossemos usar
             />
         </>

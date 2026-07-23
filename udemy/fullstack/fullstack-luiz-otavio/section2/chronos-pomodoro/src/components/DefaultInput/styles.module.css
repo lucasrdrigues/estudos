@@ -1,8 +1,30 @@
-.container {
-    /* clamp serve para definir um intervalo de valores para a font-size, 8rem para telas pequenas e 16rem para telas grandes, o 25vw é o valor intermediário */
-    font-size: clamp(8rem, 25vw, 16rem);
-    font-weight: bold;
+.input {
+    background-color: transparent;
+    border: none;
     text-align: center;
-    /* line-height serve para modificar o espaçamento entre as linhas de um texto */
-    line-height: 1.3;
+    font-size: 1.8rem;
+    padding: 0.8rem;
+    border-radius: 0.8rem;
+    color: var(--text-default);
+
+    border: 0.2rem solid transparent;
+    border-bottom: 0.2rem solid var(--primary);
+    transition: all 0.1s ease-in-out;
+}
+
+.input:focus {
+    border-radius: 0.8rem;
+    border: 0.2rem solid var(--primary);
+}
+
+.input::placeholder {
+    color: var(--gray-500);
+    font-size: 1.4rem;
+    font-style: italic;
+}
+
+/* Caso o campo esteja disabled */
+.input:disabled {
+    border-bottom: 0.2rem solid var(--disabled);
+    color: var(--text-muted);
 }
